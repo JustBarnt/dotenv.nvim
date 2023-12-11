@@ -58,7 +58,10 @@ local function parse_data(data)
 end
 
 local function get_env_file()
-  local files = vim.fs.find(".env", { upward = true, type = "file" })
+  local files = vim.fs.find(function(name)
+    return name:match("^%.env%-?(.*)$")
+  end, { upward = true, type = "file" })
+
   if #files == 0 then
     return
   end
@@ -77,7 +80,7 @@ local function load(file)
   end
 
   parse_data(data)
-  notify(".env file loaded")
+  notify(file .. " loaded")
 end
 
 dotenv.setup = function(args)
